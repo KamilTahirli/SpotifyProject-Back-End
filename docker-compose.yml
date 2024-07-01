@@ -1,0 +1,27 @@
+version: "3.9"
+services:
+  esb:
+    image: adviad/php81
+    #build:
+    #context: .
+    #dockerfile: Dockerfile
+    container_name: yt-laravel
+    restart: always
+    working_dir: /var/www/html
+    entrypoint: ["/bin/sh","-c"]
+    command:
+      - |
+        composer install
+        chown -R apache:apache /var/www/html
+        /usr/sbin/crond -f&
+        /usr/sbin/httpd -D FOREGROUND
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - "8000:80"
+    networks:
+      - network
+networks:
+  network:
+    driver: bridge
+    name: test_network
